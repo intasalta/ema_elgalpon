@@ -5,13 +5,15 @@ from openpyxl.utils import get_column_letter
 
 ARCHIVOS_A_CONVERTIR = ["downld02.txt", "downld08.txt"]
 
+# Lista exacta de 29 columnas presentes en el TXT de origen
 COL_NAMES = [
-    "Fecha", "Hora", "Temp Ext (°C)", "Temp Máx", "Temp Mín", "Humedad Ext (%)", "Punto Rocío",
-    "Vel Vent", "Dir Vent", "Ráfaga Vent", "Vel Máx", "Dir Máx", "Sens Term Wind",
-    "Índice Calor", "THW", "THSW", "Presión (hPa)", "Lluvia (mm)", "Int Lluvia",
-    "Rad Solar", "Energía Solar", "Rad Solar Máx", "UV", "Dosis UV", "UV Máx",
-    "Grados Día C", "Grados Día F", "Temp Int", "Humedad Int", "ET", "Muestras Vent",
-    "Tx Vent", "Recepción ISS", "Intervalo Arc"
+    "Fecha", "Hora", "Temp Ext (°C)", "Temp Máx", "Temp Mín", 
+    "Humedad Ext (%)", "Punto Rocío", "Vel Vent", "Dir Vent", 
+    "Wind Run", "Ráfaga Vent", "Dir Ráfaga", "Sens Term Wind", 
+    "Índice Calor", "THW Index", "Presión (hPa)", "Lluvia (mm)", 
+    "Int Lluvia", "Heat D-D", "Cool D-D", "Temp Int", 
+    "Humedad Int", "Punto Rocío Int", "Heat Int", "EMC Int", 
+    "Densidad Aire Int", "Muestras Vent", "Tx Vent", "Recepción ISS", "Intervalo Arc"
 ]
 
 header_fill = PatternFill(start_color="1F4E78", fill_type="solid")
@@ -25,25 +27,20 @@ thin_border = Border(
 
 for file_path in ARCHIVOS_A_CONVERTIR:
     try:
-        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-            lines = f.readlines()
+        # read_fwf detecta automáticamente las columnas por anchura fija o delimitación por espacios
+        df = pd.read_fwf(
+            file_path, 
+            skiprows=3,          # Salta las primeras 3 líneas (encabezados y separador ---)
+            header=None, 
+            names=COL_NAMES, 
+            encoding="utf-8"
+        )
     except FileNotFoundError:
         print(f"Archivo no encontrado: {file_path}")
         continue
 
-    data_rows = []
-    for line in lines[3:]:
-        parts = line.strip().split()
-        if len(parts) >= 30:
-            # Ajustar la longitud de la fila a la cantidad exacta de nombres de columnas
-            if len(parts) < len(COL_NAMES):
-                parts.extend([""] * (len(COL_NAMES) - len(parts)))
-            elif len(parts) > len(COL_NAMES):
-                parts = parts[:len(COL_NAMES)]
-            data_rows.append(parts)
-
-    # Crear el DataFrame asignando explícitamente las columnas
-    df = pd.DataFrame(data_rows, columns=COL_NAMES)
+    # Eliminar filas vacías o líneas divisorias adicionales si existieran
+    df = df.dropna(subset=["Fecha"])
 
     base_name = file_path.rsplit('.', 1)[0]
     
@@ -56,11 +53,11 @@ for file_path in ARCHIVOS_A_CONVERTIR:
     ws.title = "Datos Meteorológicos"
 
     # Título principal
-    ws.merge_cells("A1:AH1")
+    ws.merge_cells("A1:AC1")
     ws["A1"] = f"Reporte Estación Meteorológica - {base_name}"
     ws["A1"].font = Font(name="Calibri", size=14, bold=True, color="1F4E78")
 
-    # Encabezados en la Fila 3
+    # Encabezados en Fila 3
     for col_idx, col_name in enumerate(COL_NAMES, 1):
         cell = ws.cell(row=3, column=col_idx, value=col_name)
         cell.fill = header_fill
@@ -73,14 +70,21 @@ for file_path in ARCHIVOS_A_CONVERTIR:
         fill = zebra_fill if r_idx % 2 == 1 else PatternFill(fill_type=None)
         for c_idx, val in enumerate(row, 1):
             cell = ws.cell(row=row_num, column=c_idx)
-            try:
-                cell.value = float(val)
-                cell.number_format = "0.0" if "." in str(val) else "0"
-            except (ValueError, TypeError):
-                cell.value = str(val) if val else ""
             
+            # Formateo numérico seguro
+            if pd.isna(val):
+                cell.value = ""
+            else:
+                try:
+                    val_num = float(val)
+                    cell.value = val_num
+                    cell.number_format = "0.00" if "." in str(val) else "0"
+                except (ValueError, TypeError):
+                    cell.value = str(val)
+
             cell.font = data_font
-            if fill.fill_type: cell.fill = fill
+            if fill.fill_type: 
+                cell.fill = fill
             cell.border = thin_border
             cell.alignment = Alignment(horizontal="center", vertical="center")
 
