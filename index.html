@@ -98,35 +98,52 @@
   </header>
 
   <!-- CONTENIDO PRINCIPAL / DASHBOARD -->
-  <!-- CONTENIDO PRINCIPAL / DASHBOARD -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-6">
 
-    <!-- FECHA Y ESTADO DEL SOL -->
-    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-4 md:p-6 border border-slate-200 dark:border-slate-700/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-colors">
+    <!-- FECHA, ESTADO DEL SOL Y CONTROL DE GRÁFICOS -->
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-4 md:p-6 border border-slate-200 dark:border-slate-700/60 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 transition-colors">
       <div>
         <span class="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">Última actualización</span>
         <h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2 mt-0.5">
           <i data-feather="clock" class="text-sky-500 h-5 w-5"></i>
-          24/09/26 - 11:44
+          24/09/26 - 11:59
         </h2>
       </div>
-      
-      <div class="flex items-center gap-6 text-sm text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-        <div class="flex items-center gap-2">
-          <i data-feather="sunrise" class="h-5 w-5 text-amber-500"></i>
-          <div>
-            <p class="text-[10px] uppercase font-bold text-slate-400">Salida Sol</p>
-            <p class="font-semibold text-slate-700 dark:text-slate-200"> 7:06 hs</p>
-          </div>
+
+      <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
+        <!-- Selector de rango para gráficos online -->
+        <div class="flex items-center bg-slate-100 dark:bg-slate-900/80 p-1 rounded-xl border border-slate-200 dark:border-slate-700/60 text-xs font-semibold gap-1">
+          <span class="text-[11px] text-slate-500 dark:text-slate-400 px-2 flex items-center gap-1">
+            <i data-feather="activity" class="h-3.5 w-3.5 text-sky-500"></i> Gráficos:
+          </span>
+          <button id="btn-rango-24h" onclick="cambiarRangoHoras(24)" class="px-2.5 py-1 rounded-lg bg-sky-500 text-white shadow-sm transition-all text-xs font-semibold">
+            24 hs
+          </button>
+          <button id="btn-rango-48h" onclick="cambiarRangoHoras(48)" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800 transition-all text-xs font-semibold">
+            48 hs
+          </button>
+          <button onclick="cargarDatosDownld()" title="Recargar gráficos dinámicos" class="p-1.5 rounded-lg text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-400 hover:bg-white/50 dark:hover:bg-slate-800 transition-all border-l border-slate-200 dark:border-slate-700/60 pl-2 ml-0.5">
+            <i id="icon-refresh-dash" data-feather="refresh-cw" class="h-3.5 w-3.5"></i>
+          </button>
         </div>
-        
-        <div class="h-8 w-px bg-slate-200 dark:bg-slate-800"></div>
-        
-        <div class="flex items-center gap-2">
-          <i data-feather="sunset" class="h-5 w-5 text-orange-500"></i>
-          <div>
-            <p class="text-[10px] uppercase font-bold text-slate-400">Puesta Sol</p>
-            <p class="font-semibold text-slate-700 dark:text-slate-200">19:15 hs</p>
+
+        <div class="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+          <div class="flex items-center gap-2">
+            <i data-feather="sunrise" class="h-5 w-5 text-amber-500"></i>
+            <div>
+              <p class="text-[10px] uppercase font-bold text-slate-400">Salida Sol</p>
+              <p class="font-semibold text-slate-700 dark:text-slate-200 text-xs sm:text-sm"> 7:06 hs</p>
+            </div>
+          </div>
+          
+          <div class="h-8 w-px bg-slate-200 dark:bg-slate-800"></div>
+          
+          <div class="flex items-center gap-2">
+            <i data-feather="sunset" class="h-5 w-5 text-orange-500"></i>
+            <div>
+              <p class="text-[10px] uppercase font-bold text-slate-400">Puesta Sol</p>
+              <p class="font-semibold text-slate-700 dark:text-slate-200 text-xs sm:text-sm">19:15 hs</p>
+            </div>
           </div>
         </div>
       </div>
@@ -142,7 +159,7 @@
             <h3 class="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
               <i data-feather="thermometer" class="h-5 w-5 text-red-500"></i> Temperatura
             </h3>
-            <span class="text-3xl font-extrabold text-slate-900 dark:text-white">25.5<span>°C</span></span>
+            <span class="text-3xl font-extrabold text-slate-900 dark:text-white">26.3<span>°C</span></span>
           </div>
 
           <table class="w-full text-xs text-left text-slate-600 dark:text-slate-300">
@@ -157,12 +174,12 @@
               <tr>
                 <td class="py-2 font-medium">Diaria</td>
                 <td class="py-2 text-center text-blue-600 dark:text-blue-400 font-semibold">5.1°C</td>
-                <td class="py-2 text-center text-red-600 dark:text-red-400 font-semibold">25.5°C</td>
+                <td class="py-2 text-center text-red-600 dark:text-red-400 font-semibold">26.3°C</td>
               </tr>
               <tr class="text-[10px] text-slate-400">
                 <td class="py-1">A hs:</td>
                 <td class="py-1 text-center"> 6:06</td>
-                <td class="py-1 text-center">11:43</td>
+                <td class="py-1 text-center">11:56</td>
               </tr>
               <tr>
                 <td class="py-2 font-medium">Mensual</td>
@@ -198,7 +215,7 @@
             <h3 class="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
               <i data-feather="droplet" class="h-5 w-5 text-blue-500"></i> Humedad
             </h3>
-            <span class="text-3xl font-extrabold text-slate-900 dark:text-white">39<span>% </span></span>
+            <span class="text-3xl font-extrabold text-slate-900 dark:text-white">40<span>% </span></span>
           </div>
 
           <table class="w-full text-xs text-left text-slate-600 dark:text-slate-300">
@@ -259,7 +276,7 @@
               <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Sensación por Viento</p>
               <p class="text-[10px] text-slate-400">Wind Chill</p>
             </div>
-            <span class="text-xl font-bold text-slate-800 dark:text-white">25.5°C</span>
+            <span class="text-xl font-bold text-slate-800 dark:text-white">26.3°C</span>
           </div>
 
           <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex justify-between items-center">
@@ -267,14 +284,14 @@
               <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Índice de Calor</p>
               <p class="text-[10px] text-slate-400">Temp + Humedad</p>
             </div>
-            <span class="text-xl font-bold text-slate-800 dark:text-white">24.8°C</span>
+            <span class="text-xl font-bold text-slate-800 dark:text-white">25.6°C</span>
           </div>
 
           <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex justify-between items-center">
             <div>
               <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Punto de Rocío Actual</p>
             </div>
-            <span class="text-lg font-bold text-slate-800 dark:text-white">10.5°C</span>
+            <span class="text-lg font-bold text-slate-800 dark:text-white">11.6°C</span>
           </div>
         </div>
 
@@ -372,7 +389,7 @@
           </div>
           <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl text-center border border-slate-100 dark:border-slate-800">
             <p class="text-xs text-slate-400 font-medium">Dirección Sector</p>
-            <p class="text-2xl font-bold text-sky-600 dark:text-sky-400">ESE</p>
+            <p class="text-2xl font-bold text-sky-600 dark:text-sky-400">SSE</p>
           </div>
         </div>
 
@@ -565,19 +582,19 @@
     const darkIcon = document.getElementById('theme-toggle-dark-icon');
     const lightIcon = document.getElementById('theme-toggle-light-icon');
 
-    // Ajustar el icono visible según el estado actual de la clase 'dark'
-    if (document.documentElement.classList.contains('dark')) {
-      lightIcon.classList.remove('hidden');
-    } else {
-      darkIcon.classList.remove('hidden');
+    function syncThemeIcons() {
+      if (document.documentElement.classList.contains('dark')) {
+        lightIcon.classList.remove('hidden');
+        darkIcon.classList.add('hidden');
+      } else {
+        darkIcon.classList.remove('hidden');
+        lightIcon.classList.add('hidden');
+      }
+      feather.replace();
     }
+    syncThemeIcons();
 
     themeToggleBtn.addEventListener('click', function() {
-      // Alternar visibilidad de iconos del botón
-      darkIcon.classList.toggle('hidden');
-      lightIcon.classList.toggle('hidden');
-
-      // Alternar clase 'dark' en el elemento HTML raíz
       if (document.documentElement.classList.contains('dark')) {
         document.documentElement.classList.remove('dark');
         localStorage.setItem('theme', 'light');
@@ -585,6 +602,8 @@
         document.documentElement.classList.add('dark');
         localStorage.setItem('theme', 'dark');
       }
+      syncThemeIcons();
+      actualizarTemaGraficos();
     });
 	
 	// 3. LÓGICA DEL MODAL INFORMATIVO "¿QUIÉNES SOMOS?"
@@ -666,6 +685,26 @@
       const rows = [];
       let started = false;
 
+      // Índices estándar por defecto en exportaciones Davis WeatherLink
+      let barIdx = 15;
+      let rainIdx = 16;
+      let rainRateIdx = 17;
+
+      // Detección dinámica de columnas según los encabezados
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (line.includes('Date') && line.includes('Time')) {
+          const hParts = line.split(/\s+/);
+          const b = hParts.findIndex(p => p.toLowerCase() === 'bar');
+          if (b !== -1) barIdx = b;
+          const r = hParts.findIndex(p => p.toLowerCase() === 'rain');
+          if (r !== -1) rainIdx = r;
+          const rr = hParts.findIndex(p => p.toLowerCase() === 'rate');
+          if (rr !== -1) rainRateIdx = rr;
+          break;
+        }
+      }
+
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;
@@ -698,10 +737,10 @@
           hiWindDir: parts[11] || '---',
           windChill: toNum(parts[12]),
           heatIndex: toNum(parts[13]),
-          bar: toNum(parts[16]),
-          rain: toNum(parts[17]),
-          rainRate: toNum(parts[18]),
-          solarRad: toNum(parts[19]),
+          bar: toNum(parts[barIdx]),
+          rain: toNum(parts[rainIdx]),
+          rainRate: toNum(parts[rainRateIdx]),
+          solarRad: parts.length > 19 ? toNum(parts[19]) : 0,
           et: parts.length >= 5 ? toNum(parts[parts.length - 5]) : 0
         });
       }
@@ -1135,8 +1174,8 @@
       const bars = rows.map(r => r.bar);
 
       const validBars = bars.filter(v => v !== null && v > 0);
-      const minBar = validBars.length ? Math.min(...validBars) : 870;
-      const maxBar = validBars.length ? Math.max(...validBars) : 890;
+      const minBar = validBars.length ? Math.min(...validBars) : 940;
+      const maxBar = validBars.length ? Math.max(...validBars) : 970;
 
       const lastBar = validBars.length ? validBars[validBars.length - 1] : null;
       const badge = document.getElementById('badge-bar-val');
